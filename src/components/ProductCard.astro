@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+}
+
+const { product } = Astro.props;
+const href = `/produtos-que-amamos/${product.slug}/`;
+---
+
+<article class="product-card">
+  <a class="product-card__media" href={href} aria-label={product.data.title}>
+    {product.data.image ? <img src={product.data.image} alt="" loading="lazy" /> : <span>{product.data.category}</span>}
+  </a>
+  <div class="product-card__body">
+    {product.data.badge && <span class="badge">{product.data.badge}</span>}
+    <p class="platform">{product.data.platform}</p>
+    <h3><a href={href}>{product.data.title}</a></h3>
+    <p>{product.data.description}</p>
+    <div class="product-card__actions">
+      <a class="button button--ghost" href={href}>Detalhes</a>
+      <a class="button button--primary" href={product.data.affiliateUrl} target="_blank" rel="nofollow sponsored noopener">Ver oferta</a>
+    </div>
+  </div>
+</article>

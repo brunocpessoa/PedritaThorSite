@@ -1,0 +1,26 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ProductCard from '@components/ProductCard.astro';
+import { getPublishedProducts } from '@lib/content';
+
+const products = await getPublishedProducts();
+---
+
+<BaseLayout
+  title="Produtos que amamos"
+  description="Vitrine de produtos recomendados pela Pedrita & Thor, com links de afiliado da Shopee, TikTok Shop, Mercado Livre e outras plataformas."
+>
+  <header class="page-header">
+    <div class="container page-header__inner">
+      <p class="eyebrow">Vitrine afiliada</p>
+      <h1>Produtos que amamos</h1>
+      <p>Uma selecao de produtos para cachorro, casa com pet, passeio, higiene, brincadeiras e bem-estar.</p>
+    </div>
+  </header>
+
+  <section class="band">
+    <div class="container product-grid">
+      {products.map((product) => <ProductCard product={product} />)}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,82 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/PostCard.astro';
+import ProductCard from '@components/ProductCard.astro';
+import SectionHeading from '@components/SectionHeading.astro';
+import { getPublishedArticles, getPublishedProducts } from '@lib/content';
+import { site } from '@lib/site';
+
+const articles = (await getPublishedArticles()).slice(0, 3);
+const products = (await getPublishedProducts()).filter((product) => product.data.featured).slice(0, 4);
+---
+
+<BaseLayout title={site.name} description={site.description}>
+  <section class="hero">
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">Conteudo pet com personalidade</p>
+        <h1>Pedrita & Thor</h1>
+        <p class="hero__text">
+          Dicas de cuidados, curiosidades leves, noticias do mundo pet e produtos que fazem sentido para a rotina com cachorros.
+        </p>
+        <div class="button-row">
+          <a class="button button--primary" href="/produtos-que-amamos/">Ver produtos</a>
+          <a class="button button--ghost" href="/cuidados-com-seu-animal/">Ler artigos</a>
+        </div>
+      </div>
+
+      <div class="hero__visual" aria-label="Personagens Pedrita e Thor">
+        <div class="pet-panel pet-panel--dark">
+          <strong>Pedrita</strong>
+          <p>Cachorrinha preta, magra, mais nova, curiosa e cheia de energia.</p>
+        </div>
+        <div class="pet-panel pet-panel--light">
+          <strong>Thor</strong>
+          <p>Cachorro branco, mais gordinho, carismatico e sempre pronto para aparecer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <SectionHeading
+      eyebrow="Afiliados com curadoria"
+      title="Produtos que amamos"
+      description="Uma vitrine limpa para achadinhos, acessorios, brinquedos e itens de cuidado."
+      href="/produtos-que-amamos/"
+    />
+    <div class="container product-grid">
+      {products.length ? products.map((product) => <ProductCard product={product} />) : (
+        <div class="notice-card">
+          <h3>Produtos em preparacao</h3>
+          <p>Cadastre produtos no CMS para eles aparecerem aqui.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="band band--soft">
+    <SectionHeading
+      eyebrow="Conteudo recente"
+      title="Artigos novos"
+      description="Cuidados, curiosidades e novidades para quem quer entender melhor a vida com pets."
+    />
+    <div class="container post-grid">
+      {articles.map((article) => <PostCard article={article} />)}
+    </div>
+  </section>
+
+  <section class="social-cta">
+    <div class="container social-cta__inner">
+      <div>
+        <p class="eyebrow">Acompanhe a rotina</p>
+        <h2>Siga Pedrita & Thor nas redes</h2>
+        <p>Videos curtos, achadinhos e momentos do dia a dia para deixar o conteudo mais perto de quem ama cachorro.</p>
+      </div>
+      <div class="button-row">
+        <a class="button button--primary" href={site.socials.instagram} rel="nofollow">Instagram</a>
+        <a class="button button--ghost" href={site.socials.tiktok} rel="nofollow">TikTok</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

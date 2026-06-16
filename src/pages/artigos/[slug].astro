@@ -1,0 +1,46 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { articleCategories } from '@lib/site';
+import { formatDate } from '@lib/content';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', ({ data }) => !data.draft);
+
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+interface Props {
+  article: CollectionEntry<'articles'>;
+}
+
+const { article } = Astro.props;
+const category = articleCategories[article.data.category];
+const { Content } = await article.render();
+---
+
+<BaseLayout title={article.data.title} description={article.data.description} image={article.data.image}>
+  <header class="page-header">
+    <div class="container page-header__inner">
+      <p class="eyebrow">{category.title}</p>
+      <h1>{article.data.title}</h1>
+      <p>{article.data.description}</p>
+      <div class="meta-row">
+        <span>{formatDate(article.data.publishDate)}</span>
+        <a href={category.path}>{category.title}</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="band">
+    <article class="container narrow article-content">
+      {article.data.image && <img src={article.data.image} alt="" />}
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+  </section>
+</BaseLayout>

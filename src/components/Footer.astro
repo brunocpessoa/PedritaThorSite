@@ -1,0 +1,23 @@
+---
+import { site } from '@lib/site';
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <section>
+      <strong>Pedrita & Thor</strong>
+      <p>Conteudo pet, dicas praticas e achadinhos para uma rotina mais leve com cachorros.</p>
+    </section>
+
+    <nav aria-label="Links do rodape">
+      <a href="/sobre/">Sobre</a>
+      <a href="/produtos-que-amamos/">Produtos</a>
+      <a href="/aviso-de-afiliados/">Afiliados</a>
+      <a href="/politica-de-privacidade/">Privacidade</a>
+    </nav>
+  </div>
+
+  <div class="container site-footer__bottom">
+    <p>© {new Date().getFullYear()} {site.name}. Alguns links podem gerar comissao de afiliado, sem custo extra para voce.</p>
+  </div>
+</footer>

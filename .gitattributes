@@ -1,0 +1,20 @@
+* text=auto
+
+*.astro text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.mjs text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.svg text eol=lf
+*.txt text eol=lf
+*.htaccess text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary

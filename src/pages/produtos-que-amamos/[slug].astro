@@ -1,0 +1,48 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products', ({ data }) => !data.draft);
+
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+interface Props {
+  product: CollectionEntry<'products'>;
+}
+
+const { product } = Astro.props;
+const { Content } = await product.render();
+---
+
+<BaseLayout title={product.data.title} description={product.data.description} image={product.data.image}>
+  <header class="page-header">
+    <div class="container page-header__inner">
+      <p class="eyebrow">{product.data.platform}</p>
+      <h1>{product.data.title}</h1>
+      <p>{product.data.description}</p>
+    </div>
+  </header>
+
+  <section class="band">
+    <article class="container product-detail">
+      <div>
+        {product.data.image ? <img src={product.data.image} alt="" /> : <div class="pet-panel pet-panel--light"><strong>{product.data.category}</strong><p>Adicione uma imagem do produto pelo CMS.</p></div>}
+      </div>
+
+      <aside class="product-detail__panel">
+        {product.data.badge && <span class="badge">{product.data.badge}</span>}
+        <p class="platform">{product.data.category}</p>
+        <div class="prose">
+          <Content />
+        </div>
+        <a class="button button--primary" href={product.data.affiliateUrl} target="_blank" rel="nofollow sponsored noopener">Ver produto</a>
+        <p class="affiliate-note">Este link pode gerar comissao para Pedrita & Thor, sem custo extra para voce.</p>
+      </aside>
+    </article>
+  </section>
+</BaseLayout>

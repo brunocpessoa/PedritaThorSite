@@ -1,0 +1,26 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/PostCard.astro';
+import { getPublishedArticles } from '@lib/content';
+import { articleCategories } from '@lib/site';
+
+const categoryKey = 'cuidados';
+const category = articleCategories[categoryKey];
+const articles = (await getPublishedArticles()).filter((article) => article.data.category === categoryKey);
+---
+
+<BaseLayout title={category.title} description={category.description}>
+  <header class="page-header">
+    <div class="container page-header__inner">
+      <p class="eyebrow">Guias e rotina</p>
+      <h1>{category.title}</h1>
+      <p>{category.description}</p>
+    </div>
+  </header>
+
+  <section class="band">
+    <div class="container post-grid">
+      {articles.map((article) => <PostCard article={article} />)}
+    </div>
+  </section>
+</BaseLayout>

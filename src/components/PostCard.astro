@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { articleCategories } from '@lib/site';
+import { formatDate } from '@lib/content';
+
+interface Props {
+  article: CollectionEntry<'articles'>;
+}
+
+const { article } = Astro.props;
+const category = articleCategories[article.data.category];
+const href = `/artigos/${article.slug}/`;
+---
+
+<article class="post-card">
+  <a class="post-card__media" href={href} aria-label={article.data.title}>
+    {article.data.image ? <img src={article.data.image} alt="" loading="lazy" /> : <span>{category.title}</span>}
+  </a>
+  <div class="post-card__body">
+    <div class="meta-row">
+      <a href={category.path}>{category.title}</a>
+      <span>{formatDate(article.data.publishDate)}</span>
+    </div>
+    <h3><a href={href}>{article.data.title}</a></h3>
+    <p>{article.data.description}</p>
+  </div>
+</article>
