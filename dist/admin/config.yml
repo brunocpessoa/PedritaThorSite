@@ -1,0 +1,66 @@
+local_backend: true
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: articles
+    label: Artigos
+    folder: src/content/articles
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - { label: Titulo, name: title, widget: string }
+      - { label: Descricao SEO, name: description, widget: text }
+      - { label: Data de publicacao, name: publishDate, widget: datetime }
+      - label: Categoria
+        name: category
+        widget: select
+        options:
+          - { label: Cuidados, value: cuidados }
+          - { label: Curiosidades, value: curiosidades }
+          - { label: Noticias, value: noticias }
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Imagem, name: image, widget: image, required: false }
+      - { label: Rascunho, name: draft, widget: boolean, default: false }
+      - { label: Conteudo, name: body, widget: markdown }
+
+  - name: products
+    label: Produtos
+    folder: src/content/products
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - { label: Nome, name: title, widget: string }
+      - { label: Descricao curta, name: description, widget: text }
+      - { label: Categoria, name: category, widget: string }
+      - label: Plataforma
+        name: platform
+        widget: select
+        options: [Shopee, TikTok Shop, Mercado Livre, Amazon, Outro]
+      - { label: Link afiliado, name: affiliateUrl, widget: string }
+      - { label: Imagem, name: image, widget: image, required: false }
+      - { label: Selo, name: badge, widget: string, required: false }
+      - { label: Destaque na home, name: featured, widget: boolean, default: false }
+      - { label: Rascunho, name: draft, widget: boolean, default: false }
+      - { label: Conteudo, name: body, widget: markdown }
+
+  - name: pages
+    label: Paginas
+    folder: src/content/pages
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - { label: Titulo, name: title, widget: string }
+      - { label: Descricao SEO, name: description, widget: text }
+      - { label: Rascunho, name: draft, widget: boolean, default: false }
+      - { label: Conteudo, name: body, widget: markdown }

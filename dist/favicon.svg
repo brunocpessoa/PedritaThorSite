@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Pedrita e Thor">
+  <rect width="64" height="64" rx="32" fill="#f7c948"/>
+  <circle cx="24" cy="29" r="12" fill="#101010"/>
+  <circle cx="41" cy="31" r="13" fill="#ffffff" stroke="#101010" stroke-width="3"/>
+  <circle cx="20" cy="27" r="2" fill="#ffffff"/>
+  <circle cx="38" cy="29" r="2" fill="#101010"/>
+  <path d="M29 43c5 4 12 4 17 0" fill="none" stroke="#101010" stroke-width="3" stroke-linecap="round"/>
+</svg>
