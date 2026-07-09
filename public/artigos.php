@@ -39,11 +39,32 @@ $categories = article_categories();
 $categoryKey = $data['category'] ?? '';
 $category = $categories[$categoryKey] ?? ['title' => '', 'path' => '#'];
 $canonicalPath = '/artigos/' . $slug . '/';
+$articleImage = !empty($data['image']) ? (string) $data['image'] : '/logo.png';
+$articleSchemas = [
+    [
+        '@context' => 'https://schema.org',
+        '@type' => 'Article',
+        'headline' => (string) ($data['title'] ?? ''),
+        'description' => (string) ($data['description'] ?? ''),
+        'image' => site_url($articleImage),
+        'datePublished' => (string) ($data['publishDate'] ?? ''),
+        'author' => [
+            '@type' => 'Organization',
+            'name' => SITE_NAME,
+        ],
+        'publisher' => site_organization_schema(),
+    ],
+    site_breadcrumb_schema([
+        ['name' => 'Inicio', 'item' => '/'],
+        ['name' => $category['title'] ?? 'Artigos', 'item' => $category['path'] ?? '/'],
+        ['name' => (string) ($data['title'] ?? '')],
+    ]),
+];
 ?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<?php render_head((string) ($data['title'] ?? ''), (string) ($data['description'] ?? ''), $canonicalPath, $data['image'] ?? null, content_seo_meta($data)); ?>
+<?php render_head((string) ($data['title'] ?? ''), (string) ($data['description'] ?? ''), $canonicalPath, $data['image'] ?? null, content_seo_meta($data), $articleSchemas); ?>
 </head>
 <body>
 <?php render_header(); ?>
@@ -63,7 +84,7 @@ $canonicalPath = '/artigos/' . $slug . '/';
   <section class="band">
     <article class="container narrow article-content">
       <?php if (!empty($data['image'])): ?>
-      <img src="<?= site_e((string) $data['image']) ?>" alt="">
+      <img src="<?= site_e((string) $data['image']) ?>" alt="<?= site_e((string) ($data['title'] ?? 'Imagem do artigo')) ?>">
       <?php endif; ?>
       <div class="prose">
         <?= render_markdown_basic($article['body']) ?>

@@ -14,7 +14,7 @@ const href = `/artigos/${article.slug}/`;
 
 <article class="post-card">
   <a class="post-card__media" href={href} aria-label={article.data.title}>
-    {article.data.image ? <img src={article.data.image} alt="" loading="lazy" /> : <span>{category.title}</span>}
+    {article.data.image ? <img src={article.data.image} alt={article.data.title} loading="lazy" /> : <span>{category.title}</span>}
   </a>
   <div class="post-card__body">
     <div class="meta-row">

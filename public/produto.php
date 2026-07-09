@@ -34,11 +34,18 @@ if ($product === null || !empty($product['data']['draft'])) {
 
 $data = $product['data'];
 $canonicalPath = '/produtos-que-amamos/' . $slug . '/';
+$productSchemas = [
+    site_breadcrumb_schema([
+        ['name' => 'Inicio', 'item' => '/'],
+        ['name' => 'Produtos', 'item' => '/produtos-que-amamos/'],
+        ['name' => (string) ($data['title'] ?? '')],
+    ]),
+];
 ?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<?php render_head((string) ($data['title'] ?? ''), (string) ($data['description'] ?? ''), $canonicalPath, $data['image'] ?? null, content_seo_meta($data)); ?>
+<?php render_head((string) ($data['title'] ?? ''), (string) ($data['description'] ?? ''), $canonicalPath, $data['image'] ?? null, content_seo_meta($data), $productSchemas); ?>
 </head>
 <body>
 <?php render_header(); ?>
@@ -55,7 +62,7 @@ $canonicalPath = '/produtos-que-amamos/' . $slug . '/';
     <article class="container product-detail">
       <div>
         <?php if (!empty($data['image'])): ?>
-        <img src="<?= site_e((string) $data['image']) ?>" alt="">
+        <img src="<?= site_e((string) $data['image']) ?>" alt="<?= site_e((string) ($data['title'] ?? 'Imagem do produto')) ?>">
         <?php else: ?>
         <div class="pet-panel pet-panel--light">
           <strong><?= site_e((string) ($data['category'] ?? '')) ?></strong>

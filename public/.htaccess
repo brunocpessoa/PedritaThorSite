@@ -3,6 +3,7 @@ ErrorDocument 404 /404.html
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Robots-Tag "index, follow"
 </IfModule>
 
 <IfModule mod_expires.c>
@@ -28,6 +29,9 @@ DirectoryIndex index.php index.html
   # Evita que /index.html continue exibindo conteudo estatico antigo gerado
   # pelo Astro depois que os produtos forem alterados pelo painel.
   RewriteRule ^index\.html$ /index.php [L,QSA]
+
+  # --- Sitemap dinamico com conteudo vivo do admin ---
+  RewriteRule ^sitemap\.xml$ /sitemap.php [L,QSA]
 
   # --- Paginas institucionais gerenciadas pelo admin ---
   # Forca estas rotas a passarem pelo Markdown vivo em public/content/pages,

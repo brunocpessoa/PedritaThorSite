@@ -18,11 +18,17 @@ usort($items, function ($a, $b) {
 
 $title = site_setting('products_page_title');
 $description = site_setting('products_page_meta_description');
+$schemas = [
+    site_breadcrumb_schema([
+        ['name' => 'Inicio', 'item' => '/'],
+        ['name' => $title],
+    ]),
+];
 ?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<?php render_head($title, $description, '/produtos-que-amamos/'); ?>
+<?php render_head($title, $description, '/produtos-que-amamos/', null, [], $schemas); ?>
 </head>
 <body>
 <?php render_header(); ?>
@@ -47,7 +53,7 @@ $description = site_setting('products_page_meta_description');
       <article class="product-card">
         <a class="product-card__media" href="<?= site_e($href) ?>" aria-label="<?= site_e((string) ($data['title'] ?? '')) ?>">
           <?php if (!empty($data['image'])): ?>
-          <img src="<?= site_e((string) $data['image']) ?>" alt="" loading="lazy">
+          <img src="<?= site_e((string) $data['image']) ?>" alt="<?= site_e((string) ($data['title'] ?? 'Imagem do produto')) ?>" loading="lazy">
           <?php else: ?>
           <span><?= site_e((string) ($data['category'] ?? '')) ?></span>
           <?php endif; ?>

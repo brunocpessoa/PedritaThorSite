@@ -20,6 +20,76 @@ function site_e(string $value): string
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
+function site_url(string $path = '/'): string
+{
+    if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) {
+        return $path;
+    }
+
+    return rtrim(SITE_URL, '/') . '/' . ltrim($path, '/');
+}
+
+function site_json_ld(array $data): void
+{
+    echo '<script type="application/ld+json">' .
+        json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) .
+        '</script>' . "\n";
+}
+
+function site_organization_schema(): array
+{
+    return [
+        '@context' => 'https://schema.org',
+        '@type' => 'Organization',
+        'name' => SITE_NAME,
+        'url' => SITE_URL,
+        'logo' => site_url('/logo.png'),
+        'sameAs' => [
+            SITE_INSTAGRAM_URL,
+            SITE_TIKTOK_URL,
+            SITE_YOUTUBE_URL,
+            SITE_SHOPEE_STORE_URL,
+        ],
+    ];
+}
+
+function site_website_schema(): array
+{
+    return [
+        '@context' => 'https://schema.org',
+        '@type' => 'WebSite',
+        'name' => SITE_NAME,
+        'url' => SITE_URL,
+    ];
+}
+
+function site_breadcrumb_schema(array $items): array
+{
+    $elements = [];
+    $position = 1;
+
+    foreach ($items as $item) {
+        $element = [
+            '@type' => 'ListItem',
+            'position' => $position,
+            'name' => (string) ($item['name'] ?? ''),
+        ];
+
+        if (!empty($item['item'])) {
+            $element['item'] = site_url((string) $item['item']);
+        }
+
+        $elements[] = $element;
+        $position++;
+    }
+
+    return [
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => $elements,
+    ];
+}
+
 /**
  * Encontra o CSS gerado pelo Astro em /_astro sem depender do hash do arquivo.
  */
@@ -168,7 +238,7 @@ function site_published_pages(): array
 /**
  * Renderiza o <head> da pagina (equivalente ao BaseLayout.astro).
  */
-function render_head(string $title, string $description, string $canonicalPath = '/', ?string $image = null, array $seo = []): void
+function render_head(string $title, string $description, string $canonicalPath = '/', ?string $image = null, array $seo = [], array $structuredData = []): void
 {
     $seoTitle = trim((string) ($seo['title'] ?? ''));
     $seoDescription = trim((string) ($seo['description'] ?? ''));
@@ -180,15 +250,24 @@ function render_head(string $title, string $description, string $canonicalPath =
         ? SITE_NAME . ' | Conteudo pet e produtos recomendados'
         : $headTitle . ' | ' . SITE_NAME;
 
-    $canonical = rtrim(SITE_URL, '/') . $canonicalPath;
+    $canonical = site_url($canonicalPath);
     $imagePath = $image ?: '/logo.png';
-    $imageUrl = (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0)
-        ? $imagePath
-        : rtrim(SITE_URL, '/') . $imagePath;
+    $imageUrl = site_url($imagePath);
     ?>
 <meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-X5G8VTNHVW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-X5G8VTNHVW');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= site_e($fullTitle) ?></title>
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="publisher" content="<?= site_e(SITE_NAME) ?>">
 <meta name="description" content="<?= site_e($headDescription) ?>">
 <?php if (is_array($keywords) && !empty($keywords)): ?>
 <meta name="keywords" content="<?= site_e(implode(', ', array_filter(array_map('strval', $keywords)))) ?>">
@@ -208,6 +287,15 @@ function render_head(string $title, string $description, string $canonicalPath =
 <meta name="theme-color" content="#f7c948">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="stylesheet" href="<?= site_e(site_css_href()) ?>">
+<?php
+    site_json_ld(site_organization_schema());
+    site_json_ld(site_website_schema());
+    foreach ($structuredData as $schema) {
+        if (is_array($schema) && !empty($schema)) {
+            site_json_ld($schema);
+        }
+    }
+?>
     <?php
 }
 

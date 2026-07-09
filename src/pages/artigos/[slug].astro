@@ -37,7 +37,7 @@ const { Content } = await article.render();
 
   <section class="band">
     <article class="container narrow article-content">
-      {article.data.image && <img src={article.data.image} alt="" />}
+      {article.data.image && <img src={article.data.image} alt={article.data.title} />}
       <div class="prose">
         <Content />
       </div>

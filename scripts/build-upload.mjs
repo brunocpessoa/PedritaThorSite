@@ -19,7 +19,7 @@ const EXCLUDED_TOP_LEVEL_DIRS = [
 ];
 
 const EXCLUDED_LABEL =
-  'index.html, artigos, paginas institucionais estaticas, produtos-que-amamos HTML estatico, noticias, curiosidades, cuidados-com-seu-animal, content';
+  'index.html, sitemap estatico, artigos, paginas institucionais estaticas, produtos-que-amamos HTML estatico, noticias, curiosidades, cuidados-com-seu-animal, content';
 
 function shouldCopy(src) {
   const rel = path.relative(distDir, src);
@@ -29,6 +29,10 @@ function shouldCopy(src) {
   const [first] = parts;
 
   if (rel === 'index.html') {
+    return false;
+  }
+
+  if (rel === 'sitemap-index.xml' || rel === 'sitemap-0.xml') {
     return false;
   }
 

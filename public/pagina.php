@@ -35,11 +35,17 @@ if ($page === null || !empty($page['data']['draft'])) {
 
 $data = $page['data'];
 $canonicalPath = '/' . $slug . '/';
+$pageSchemas = [
+    site_breadcrumb_schema([
+        ['name' => 'Inicio', 'item' => '/'],
+        ['name' => (string) ($data['title'] ?? '')],
+    ]),
+];
 ?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<?php render_head((string) ($data['title'] ?? ''), (string) ($data['description'] ?? ''), $canonicalPath, $data['image'] ?? null, content_seo_meta($data)); ?>
+<?php render_head((string) ($data['title'] ?? ''), (string) ($data['description'] ?? ''), $canonicalPath, $data['image'] ?? null, content_seo_meta($data), $pageSchemas); ?>
 </head>
 <body>
 <?php render_header(); ?>
@@ -54,7 +60,7 @@ $canonicalPath = '/' . $slug . '/';
   <section class="band">
     <article class="container narrow page-content">
       <?php if (!empty($data['image'])): ?>
-      <img src="<?= site_e((string) $data['image']) ?>" alt="">
+      <img src="<?= site_e((string) $data['image']) ?>" alt="<?= site_e((string) ($data['title'] ?? 'Imagem da pagina')) ?>">
       <?php endif; ?>
       <div class="prose">
         <?= render_markdown_basic($page['body']) ?>

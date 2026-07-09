@@ -85,7 +85,7 @@ $categories = article_categories();
         <article class="product-card">
           <a class="product-card__media" href="<?= site_e($href) ?>" aria-label="<?= site_e((string) ($data['title'] ?? '')) ?>">
             <?php if (!empty($data['image'])): ?>
-            <img src="<?= site_e((string) $data['image']) ?>" alt="" loading="lazy">
+            <img src="<?= site_e((string) $data['image']) ?>" alt="<?= site_e((string) ($data['title'] ?? 'Imagem do produto')) ?>" loading="lazy">
             <?php else: ?>
             <span><?= site_e((string) ($data['category'] ?? 'Produto')) ?></span>
             <?php endif; ?>
@@ -133,7 +133,7 @@ $categories = article_categories();
       <article class="post-card">
         <a class="post-card__media" href="<?= site_e($href) ?>" aria-label="<?= site_e((string) ($data['title'] ?? '')) ?>">
           <?php if (!empty($data['image'])): ?>
-          <img src="<?= site_e((string) $data['image']) ?>" alt="" loading="lazy">
+          <img src="<?= site_e((string) $data['image']) ?>" alt="<?= site_e((string) ($data['title'] ?? 'Imagem do artigo')) ?>" loading="lazy">
           <?php else: ?>
           <span><?= site_e($cat['title']) ?></span>
           <?php endif; ?>

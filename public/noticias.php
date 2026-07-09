@@ -19,11 +19,17 @@ usort($items, function ($a, $b) {
     $bd = strtotime((string) ($b['data']['publishDate'] ?? '')) ?: 0;
     return $bd - $ad;
 });
+$schemas = [
+    site_breadcrumb_schema([
+        ['name' => 'Inicio', 'item' => '/'],
+        ['name' => $category['title']],
+    ]),
+];
 ?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<?php render_head($category['title'], $category['description'], $category['path']); ?>
+<?php render_head($category['title'], $category['description'], $category['path'], null, [], $schemas); ?>
 </head>
 <body>
 <?php render_header(); ?>
@@ -49,7 +55,7 @@ usort($items, function ($a, $b) {
       <article class="post-card">
         <a class="post-card__media" href="<?= site_e($href) ?>" aria-label="<?= site_e((string) ($data['title'] ?? '')) ?>">
           <?php if (!empty($data['image'])): ?>
-          <img src="<?= site_e((string) $data['image']) ?>" alt="" loading="lazy">
+          <img src="<?= site_e((string) $data['image']) ?>" alt="<?= site_e((string) ($data['title'] ?? 'Imagem do artigo')) ?>" loading="lazy">
           <?php else: ?>
           <span><?= site_e($cat['title']) ?></span>
           <?php endif; ?>

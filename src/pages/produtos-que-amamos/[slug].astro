@@ -31,7 +31,7 @@ const { Content } = await product.render();
   <section class="band">
     <article class="container product-detail">
       <div>
-        {product.data.image ? <img src={product.data.image} alt="" /> : <div class="pet-panel pet-panel--light"><strong>{product.data.category}</strong><p>Adicione uma imagem do produto pelo CMS.</p></div>}
+        {product.data.image ? <img src={product.data.image} alt={product.data.title} /> : <div class="pet-panel pet-panel--light"><strong>{product.data.category}</strong><p>Adicione uma imagem do produto pelo CMS.</p></div>}
       </div>
 
       <aside class="product-detail__panel">

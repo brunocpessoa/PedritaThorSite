@@ -20,14 +20,39 @@ const {
 
 const fullTitle = title === site.name ? `${site.name} | Conteudo pet e produtos recomendados` : `${title} | ${site.name}`;
 const imageUrl = new URL(image, site.url).toString();
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.name,
+  url: site.url,
+  logo: new URL('/logo.png', site.url).toString(),
+  sameAs: [site.socials.instagram, site.socials.tiktok, site.socials.youtube, site.store.shopee],
+};
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.name,
+  url: site.url,
+};
 ---
 
 <!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-X5G8VTNHVW"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-X5G8VTNHVW');
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{fullTitle}</title>
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <meta name="publisher" content={site.name} />
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta property="og:locale" content="pt_BR" />
@@ -43,6 +68,8 @@ const imageUrl = new URL(image, site.url).toString();
     <meta name="twitter:image" content={imageUrl} />
     <meta name="theme-color" content="#f7c948" />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
   </head>
   <body>
     <Header />

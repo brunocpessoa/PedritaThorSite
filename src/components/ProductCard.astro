@@ -11,7 +11,7 @@ const href = `/produtos-que-amamos/${product.slug}/`;
 
 <article class="product-card">
   <a class="product-card__media" href={href} aria-label={product.data.title}>
-    {product.data.image ? <img src={product.data.image} alt="" loading="lazy" /> : <span>{product.data.category}</span>}
+    {product.data.image ? <img src={product.data.image} alt={product.data.title} loading="lazy" /> : <span>{product.data.category}</span>}
   </a>
   <div class="product-card__body">
     {product.data.badge && <span class="badge">{product.data.badge}</span>}
