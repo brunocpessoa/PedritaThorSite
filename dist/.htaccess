@@ -15,3 +15,68 @@ ErrorDocument 404 /404.html
   ExpiresByType image/webp "access plus 1 year"
   ExpiresByType text/html "access plus 5 minutes"
 </IfModule>
+
+# Quando index.php e index.html existem na mesma pasta, o PHP deve vencer.
+# Necessario para produtos-que-amamos/index.php sobrepor qualquer index.html
+# estatico gerado pelo Astro que ainda esteja presente na mesma pasta.
+DirectoryIndex index.php index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # --- Home dinamica: index.php le produtos/artigos do admin ---
+  # Evita que /index.html continue exibindo conteudo estatico antigo gerado
+  # pelo Astro depois que os produtos forem alterados pelo painel.
+  RewriteRule ^index\.html$ /index.php [L,QSA]
+
+  # --- Paginas institucionais gerenciadas pelo admin ---
+  # Forca estas rotas a passarem pelo Markdown vivo em public/content/pages,
+  # mesmo que ainda exista uma pasta estatica antiga no servidor.
+  RewriteRule ^(sobre|aviso-de-afiliados|politica-de-privacidade)/?$ /pagina.php?slug=$1 [L,QSA]
+
+  # --- Artigos individuais: /artigos/<slug>/ -> /artigos.php?slug=<slug> ---
+  # So entra em acao quando o segmento de slug nao esta vazio (RewriteCond do slug
+  # com pelo menos 1 caractere), assim a listagem nao existe nessa rota
+  # (nao ha pagina de listagem em /artigos/ neste projeto).
+  RewriteRule ^artigos/([^/]+)/?$ /artigos.php?slug=$1 [L,QSA]
+
+  # --- Produto individual: /produtos-que-amamos/<slug>/ -> /produto.php?slug=<slug> ---
+  # A condicao de slug nao-vazio ([^/]+) garante que a URL "bare"
+  # /produtos-que-amamos/ (a listagem, servida por produtos-que-amamos/index.php
+  # via DirectoryIndex) nunca seja capturada por esta regra, porque ela exige
+  # ao menos um caractere de slug depois da barra. Tambem confere que o
+  # caminho fisico requisitado nao e um diretorio existente (a propria pasta
+  # produtos-que-amamos/), evitando conflito com o index.php daquela pasta.
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^produtos-que-amamos/([^/]+)/?$ /produto.php?slug=$1 [L,QSA]
+
+  # --- Listagens de artigos por categoria: noticias, curiosidades, cuidados ---
+  # Escolha de abordagem: usar os arquivos *.php na raiz (noticias.php,
+  # curiosidades.php, cuidados-com-seu-animal.php) diretamente via rewrite,
+  # de forma uniforme para as tres categorias, em vez de pastas com index.php.
+  # Isso evita criar 3 diretorios extras e mantem a mesma logica do
+  # DirectoryIndex livre para outras rotas (ex.: produtos-que-amamos/).
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^noticias/?$ /noticias.php [L,QSA]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^curiosidades/?$ /curiosidades.php [L,QSA]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^cuidados-com-seu-animal/?$ /cuidados-com-seu-animal.php [L,QSA]
+
+  # --- Catch-all de paginas genericas (colecao "pages" do CMS): /<slug>/ -> /pagina.php?slug=<slug> ---
+  # Esta regra fica por ultimo (menor prioridade) e so dispara quando NAO existe
+  # um arquivo real (!-f) nem um diretorio real (!-d) com esse nome no servidor.
+  # Isso garante que rotas estaticas ou dinamicas especificas como /noticias/,
+  # /curiosidades/, /cuidados-com-seu-animal/, /produtos-que-amamos/, /admin/, /uploads/ e
+  # quaisquer outras pastas/arquivos fisicos existentes continuem servidas
+  # normalmente e nunca sejam interceptadas por esta regra. As paginas
+  # institucionais gerenciadas pelo admin entram na regra especifica acima.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^([^/]+)/?$ /pagina.php?slug=$1 [L,QSA]
+</IfModule>

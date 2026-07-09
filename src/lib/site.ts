@@ -4,9 +4,12 @@ export const site = {
   description:
     'Conteudo pet com dicas de cuidados, curiosidades, noticias leves e produtos recomendados para quem ama cachorros.',
   socials: {
-    instagram: '#',
-    tiktok: '#',
-    youtube: '#',
+    instagram: 'https://www.instagram.com/pedritaethorstore?igsh=MThlZ3BxcnA1NmV5NQ%3D%3D',
+    tiktok: 'https://www.tiktok.com/@pedritaethor',
+    youtube: 'https://www.youtube.com/@pedritaethor',
+  },
+  store: {
+    shopee: 'https://s.shopee.com.br/6VM8ojrAOa?share_channel_code=1',
   },
 };
 

@@ -25,15 +25,14 @@ const products = (await getPublishedProducts()).filter((product) => product.data
         </div>
       </div>
 
-      <div class="hero__visual" aria-label="Personagens Pedrita e Thor">
-        <div class="pet-panel pet-panel--dark">
-          <strong>Pedrita</strong>
-          <p>Cachorrinha preta, magra, mais nova, curiosa e cheia de energia.</p>
-        </div>
-        <div class="pet-panel pet-panel--light">
-          <strong>Thor</strong>
-          <p>Cachorro branco, mais gordinho, carismatico e sempre pronto para aparecer.</p>
-        </div>
+      <div class="hero__visual">
+        <img
+          class="hero__image"
+          src="/uploads/imagem_central_site_Pedrita_Thor.png"
+          alt="Pedrita e Thor em cards com suas fotos e descricoes"
+          width="1536"
+          height="1152"
+        />
       </div>
     </div>
   </section>
@@ -74,8 +73,10 @@ const products = (await getPublishedProducts()).filter((product) => product.data
         <p>Videos curtos, achadinhos e momentos do dia a dia para deixar o conteudo mais perto de quem ama cachorro.</p>
       </div>
       <div class="button-row">
-        <a class="button button--primary" href={site.socials.instagram} rel="nofollow">Instagram</a>
-        <a class="button button--ghost" href={site.socials.tiktok} rel="nofollow">TikTok</a>
+        <a class="button button--primary" href={site.socials.instagram} target="_blank" rel="nofollow noopener">Instagram</a>
+        <a class="button button--ghost" href={site.socials.tiktok} target="_blank" rel="nofollow noopener">TikTok</a>
+        <a class="button button--ghost" href={site.socials.youtube} target="_blank" rel="nofollow noopener">YouTube</a>
+        <a class="button button--ghost" href={site.store.shopee} target="_blank" rel="nofollow sponsored noopener">Shopee</a>
       </div>
     </div>
   </section>

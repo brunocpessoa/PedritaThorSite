@@ -19,7 +19,7 @@ const links = [
       <img class="brand__logo" src="/logo.png" alt="Pedrita & Thor" width="180" height="64" />
     </a>
 
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal">
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">
       Menu
     </button>
 
@@ -41,5 +41,12 @@ const links = [
     const expanded = toggle.getAttribute('aria-expanded') === 'true';
     toggle.setAttribute('aria-expanded', String(!expanded));
     nav?.classList.toggle('is-open', !expanded);
+  });
+
+  nav?.addEventListener('click', (event) => {
+    if (event.target instanceof HTMLAnchorElement) {
+      toggle?.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('is-open');
+    }
   });
 </script>

@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "build:upload": "astro check && astro build && node scripts/build-upload.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

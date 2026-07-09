@@ -1,0 +1,10 @@
+# Bloqueia acesso web direto aos arquivos de conteudo (Markdown + frontmatter).
+# Estes arquivos sao lidos pelo PHP no servidor (admin/_lib/content.php) e
+# nunca devem ser servidos diretamente ao navegador.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>

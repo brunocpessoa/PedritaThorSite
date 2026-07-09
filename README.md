@@ -1,14 +1,23 @@
 # Pedrita & Thor Site
 
-Site editorial e vitrine de afiliados para `pedritaethor.com`, criado com Astro e conteudo em Markdown.
+Site editorial e vitrine de afiliados para `pedritaethor.com`.
 
-## Por que esta estrutura
+O projeto combina:
 
-- Nao depende de PHP.
-- O site publico e rapido, estatico e bom para SEO.
-- Artigos e produtos ficam em arquivos Markdown organizados.
-- O painel Decap CMS pode editar os conteudos pelo navegador.
-- A estrutura pode crescer para um CMS mais robusto no futuro, como Payload ou Directus.
+- Astro para layout, paginas estaticas, CSS, sitemap e build.
+- PHP para o admin online e para conteudos editaveis em producao.
+- Markdown como armazenamento simples de artigos, produtos e paginas.
+
+## Estrutura
+
+- `src/`: codigo Astro do site estatico.
+- `src/content/`: conteudo usado pelo Astro como base local.
+- `public/admin/`: painel PHP de login, cadastro, edicao e recuperacao de senha.
+- `public/content/`: conteudo Markdown lido e salvo pelo admin PHP.
+- `public/_inc/layout.php`: layout compartilhado pelas paginas PHP publicas.
+- `scripts/build-upload.mjs`: cria o pacote seguro para upload na Hostinger.
+- `dist/`: saida bruta do Astro.
+- `dist-upload/`: pacote recomendado para enviar ao `public_html`.
 
 ## Comandos
 
@@ -16,29 +25,51 @@ Site editorial e vitrine de afiliados para `pedritaethor.com`, criado com Astro 
 npm install
 npm run dev
 npm run build
-npm run preview
+npm run build:upload
 ```
 
-## Conteudos
+Use `npm run dev` para trabalhar no Astro localmente.
 
-- Artigos: `src/content/articles`
-- Produtos: `src/content/products`
-- Paginas institucionais: `src/content/pages`
+Use `npm run build:upload` antes de publicar na Hostinger. Esse comando gera `dist-upload/` com os arquivos estaticos, PHPs e assets necessarios, mas sem sobrescrever as pastas dinamicas que devem continuar sendo gerenciadas pelo admin.
 
-## Painel editorial
+## Conteudo
 
-Depois do deploy e da configuracao de login do Decap CMS, acesse:
+No servidor, o admin PHP salva conteudo em:
+
+- Artigos: `public/content/articles`
+- Produtos: `public/content/products`
+- Paginas institucionais editaveis: `public/content/pages`
+
+Os arquivos em `src/content/` continuam servindo como fonte local para o Astro e como semente inicial, mas o conteudo vivo em producao fica em `public/content/`.
+
+## Admin
+
+Acesse:
 
 ```text
 /admin/
 ```
 
-Em desenvolvimento, o arquivo `public/admin/config.yml` esta com `local_backend: true`.
+Na primeira visita, se ainda nao existir credencial, o site redireciona para `setup.php` para criar o acesso inicial.
+
+As credenciais ficam em `public/admin/_data/credentials.json`, ignoradas pelo git e protegidas por `.htaccess`.
+
+## Deploy rapido
+
+```powershell
+cd C:\projects\PedritaThorSite
+npm install
+npm run build:upload
+```
+
+Depois envie o conteudo de `dist-upload/` para `public_html`.
+
+No primeiro deploy do admin, tambem garanta que `public/content/` exista no servidor como semente. Nos deploys seguintes, nao substitua essa pasta sem backup, porque ela pode conter conteudo editado pelo painel.
 
 ## Proximos ajustes importantes
 
 1. Trocar imagens temporarias por fotos reais da Pedrita e do Thor.
-2. Configurar Decap CMS com GitHub/GitLab/Bitbucket.
-3. Definir links reais de Instagram, TikTok e YouTube.
-4. Configurar Search Console e Analytics.
-5. Criar politica de privacidade e aviso de afiliados definitivos.
+2. Definir links reais de Instagram, TikTok e YouTube.
+3. Configurar Search Console e Analytics.
+4. Revisar politica de privacidade e aviso de afiliados definitivos.
+5. Validar o PHP no ambiente da Hostinger depois do upload.
