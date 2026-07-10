@@ -27,6 +27,8 @@ function content_schema(string $type): array
                 'category' => 'string',
                 'tags' => 'list',
                 'image' => 'string_optional',
+                'imageFit' => 'string_optional',
+                'imagePosition' => 'string_optional',
                 'draft' => 'bool',
             ];
         case 'products':

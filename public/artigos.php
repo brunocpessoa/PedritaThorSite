@@ -84,7 +84,17 @@ $articleSchemas = [
   <section class="band">
     <article class="container narrow article-content">
       <?php if (!empty($data['image'])): ?>
-      <img src="<?= site_e((string) $data['image']) ?>" alt="<?= site_e((string) ($data['title'] ?? 'Imagem do artigo')) ?>">
+      <?php
+      $imageFit = in_array(($data['imageFit'] ?? 'cover'), ['cover', 'contain'], true) ? (string) ($data['imageFit'] ?? 'cover') : 'cover';
+      $imagePosition = in_array(($data['imagePosition'] ?? 'center center'), ['center center', 'center top', 'center bottom', 'left center', 'right center'], true)
+          ? (string) ($data['imagePosition'] ?? 'center center')
+          : 'center center';
+      ?>
+      <img
+        src="<?= site_e((string) $data['image']) ?>"
+        alt="<?= site_e((string) ($data['title'] ?? 'Imagem do artigo')) ?>"
+        style="object-fit: <?= site_e($imageFit) ?>; object-position: <?= site_e($imagePosition) ?>;"
+      >
       <?php endif; ?>
       <div class="prose">
         <?= render_markdown_basic($article['body']) ?>

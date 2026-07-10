@@ -211,6 +211,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $publishDate = trim((string) ($_POST['publishDate'] ?? ''));
             $category = trim((string) ($_POST['category'] ?? ''));
             $image = trim((string) ($_POST['image'] ?? ''));
+            $imageFit = trim((string) ($_POST['imageFit'] ?? 'cover'));
+            $imagePosition = trim((string) ($_POST['imagePosition'] ?? 'center center'));
 
             if ($publishDate === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $publishDate)) {
                 $errors[] = 'Data de publicacao invalida (use o formato AAAA-MM-DD).';
@@ -218,10 +220,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!in_array($category, ['cuidados', 'curiosidades', 'noticias'], true)) {
                 $errors[] = 'Categoria invalida.';
             }
+            if (!in_array($imageFit, ['cover', 'contain'], true)) {
+                $errors[] = 'Ajuste de imagem invalido.';
+            }
+            if (!in_array($imagePosition, ['center center', 'center top', 'center bottom', 'left center', 'right center'], true)) {
+                $errors[] = 'Posicao de imagem invalida.';
+            }
 
             $data['publishDate'] = $publishDate;
             $data['category'] = $category;
             $data['image'] = $image;
+            $data['imageFit'] = $imageFit;
+            $data['imagePosition'] = $imagePosition;
         } elseif ($type === 'products') {
             $category = trim((string) ($_POST['category'] ?? ''));
             $platform = trim((string) ($_POST['platform'] ?? ''));
@@ -293,6 +303,8 @@ $tagsVal = $_SERVER['REQUEST_METHOD'] === 'POST'
     ? (string) ($postData['tags'] ?? '')
     : implode(', ', $existing['data']['tags'] ?? []);
 $imageVal = field_value('image', $postData, $existing);
+$imageFitVal = field_value('imageFit', $postData, $existing, 'cover');
+$imagePositionVal = field_value('imagePosition', $postData, $existing, 'center center');
 $platformVal = field_value('platform', $postData, $existing);
 $affiliateUrlVal = field_value('affiliateUrl', $postData, $existing);
 $badgeVal = field_value('badge', $postData, $existing);
@@ -331,6 +343,8 @@ $pageTitle = $isNew ? 'Novo item' : 'Editar item';
     .hint { font-size: 12px; color: #777; margin: -12px 0 16px; }
     .image-uploader { display: grid; gap: 10px; margin-bottom: 16px; }
     .image-uploader input[type=text] { margin-bottom: 0; }
+    .image-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .image-options select { margin-bottom: 0; }
     .dropzone {
       display: grid; gap: 4px; place-items: center; padding: 18px; text-align: center;
       border: 1px dashed #9ca3af; border-radius: 8px; background: #f8fafc; cursor: pointer;
@@ -360,6 +374,7 @@ $pageTitle = $isNew ? 'Novo item' : 'Editar item';
     .seo-actions { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
     .seo-actions button { padding: 8px 12px; font-size: 13px; }
     .seo-status { color: #647067; font-size: 12px; }
+    @media (max-width: 680px) { .image-options { grid-template-columns: 1fr; } }
   </style>
   <link rel="stylesheet" href="admin.css" />
 </head>
@@ -423,6 +438,33 @@ $pageTitle = $isNew ? 'Novo item' : 'Editar item';
         </label>
         <img class="image-preview" src="<?= admin_e((string) $imageVal) ?>" alt="" <?= $imageVal ? '' : 'hidden' ?> />
       </div>
+      <div class="image-options">
+        <div>
+          <label for="imageFit">Ajuste da imagem no artigo</label>
+          <select id="imageFit" name="imageFit">
+            <option value="cover" <?= $imageFitVal === 'cover' ? 'selected' : '' ?>>Preencher espaco (pode cortar)</option>
+            <option value="contain" <?= $imageFitVal === 'contain' ? 'selected' : '' ?>>Mostrar imagem inteira</option>
+          </select>
+        </div>
+        <div>
+          <label for="imagePosition">Posicao da imagem</label>
+          <select id="imagePosition" name="imagePosition">
+            <?php
+            $imagePositionOptions = [
+                'center center' => 'Centro',
+                'center top' => 'Topo',
+                'center bottom' => 'Baixo',
+                'left center' => 'Esquerda',
+                'right center' => 'Direita',
+            ];
+            foreach ($imagePositionOptions as $value => $label):
+            ?>
+            <option value="<?= admin_e($value) ?>" <?= $imagePositionVal === $value ? 'selected' : '' ?>><?= admin_e($label) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+      </div>
+      <p class="hint">Use "Mostrar imagem inteira" quando a foto estiver cortando demais.</p>
       <?php elseif ($type === 'products'): ?>
       <label for="category">Categoria</label>
       <input type="text" id="category" name="category" value="<?= admin_e((string) $categoryVal) ?>" required />
@@ -658,12 +700,21 @@ $pageTitle = $isNew ? 'Novo item' : 'Editar item';
       const fileInput = uploader.querySelector('input[name="image_upload"]');
       const dropzone = uploader.querySelector('.dropzone');
       const preview = uploader.querySelector('.image-preview');
+      const imageFitSelect = document.querySelector('#imageFit');
+      const imagePositionSelect = document.querySelector('#imagePosition');
+
+      const updatePreviewStyle = () => {
+        if (!preview) return;
+        if (imageFitSelect) preview.style.objectFit = imageFitSelect.value;
+        if (imagePositionSelect) preview.style.objectPosition = imagePositionSelect.value;
+      };
 
       const showPreview = (file) => {
         if (!file || !preview) return;
         const url = URL.createObjectURL(file);
         preview.src = url;
         preview.hidden = false;
+        updatePreviewStyle();
       };
 
       fileInput?.addEventListener('change', () => {
@@ -676,7 +727,12 @@ $pageTitle = $isNew ? 'Novo item' : 'Editar item';
         const value = textInput.value.trim();
         preview.src = value;
         preview.hidden = value === '';
+        updatePreviewStyle();
       });
+
+      imageFitSelect?.addEventListener('change', updatePreviewStyle);
+      imagePositionSelect?.addEventListener('change', updatePreviewStyle);
+      updatePreviewStyle();
 
       ['dragenter', 'dragover'].forEach((eventName) => {
         dropzone?.addEventListener(eventName, (event) => {
