@@ -23,6 +23,12 @@ $typeLabels = [
     'pages' => 'Paginas',
 ];
 
+$articleCategoryLabels = [
+    'cuidados' => 'Cuidados',
+    'curiosidades' => 'Curiosidades',
+    'noticias' => 'Noticias',
+];
+
 $message = '';
 $error = '';
 
@@ -119,6 +125,7 @@ $csrf = admin_csrf_token();
         <tr>
           <th>Titulo</th>
           <?php if ($type === 'articles'): ?><th>Data</th><?php endif; ?>
+          <?php if ($type === 'articles'): ?><th>Classificacao</th><?php endif; ?>
           <th>Status</th>
           <th>Acoes</th>
         </tr>
@@ -134,6 +141,7 @@ $csrf = admin_csrf_token();
           <td><?= admin_e((string) ($data['title'] ?? $slug)) ?></td>
           <?php if ($type === 'articles'): ?>
           <td><?= admin_e((string) ($data['publishDate'] ?? '')) ?></td>
+          <td><?= admin_e($articleCategoryLabels[(string) ($data['category'] ?? '')] ?? (string) ($data['category'] ?? '')) ?></td>
           <?php endif; ?>
           <td>
             <?php if ($isDraft): ?>
